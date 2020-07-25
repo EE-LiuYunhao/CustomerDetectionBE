@@ -40,4 +40,10 @@ public class GetUserInfoController
         model.testSetter(1, "David", 'M', new String[]{"/image/0593f23ade.jpg"}, new String[]{"/face/445ee22110a.mat"}, 3422L);
         return new UserInfoModel[]{model};
     }
+
+    @RequestMapping(value="/user/count")
+    public Integer countCurrentUsers()
+    {
+        return 0;
+    }
 }
