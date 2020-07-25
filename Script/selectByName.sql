@@ -10,11 +10,13 @@ BEGIN
     ) AS f
     INNER JOIN
     (
-        SELECT `faceId`, `ImgPath`, `uid`
+        SELECT `faceId`, `ImgPath`, `uid`, `imgId`
         FROM `FaceImgPath`
         WHERE `uid` IN (SELECT `uid` FROM `UserInfo` WHERE `name` = userName)
     ) AS i
     ON 
-    f.`uid` = i.`uid`;
+    f.`uid` = i.`uid`
+    AND
+    f.`faceId` = i.`faceId`;
 END$$
 DELIMITER ;
