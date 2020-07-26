@@ -2,6 +2,9 @@ package com.ivm.CustomerDetect.model;
 
 import java.beans.JavaBean;
 
+/**
+ * For the query regarding the User table
+ */
 @JavaBean
 public class UserModel
 {

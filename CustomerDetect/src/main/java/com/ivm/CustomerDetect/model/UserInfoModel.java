@@ -2,6 +2,11 @@ package com.ivm.CustomerDetect.model;
 
 import java.beans.JavaBean;
 
+/**
+ * Model for the returned result via RESTFul API
+ * Including all the relevant info that is connected 
+ * by the UID field. 
+ */
 @JavaBean
 public class UserInfoModel
 {
@@ -66,20 +71,21 @@ public class UserInfoModel
         return avgStay;
     }
 
-    public void testSetter(
-        Integer uid,
-        String name,
-        Character gender,
-        String [] imgPath,
-        String [] encodedFacePath,
-        Long avgStay // in minutes
-    )
+    @Override
+    public String toString()
     {
-        this.uid = uid;
-        this.name = name;
-        this.gender = gender;
-        this.imgPath = imgPath;
-        this.encodedFacePath = encodedFacePath;
-        this.avgStay = avgStay;
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format("{\n\tuid:%d;\n\tname:%s\n\tgender:%c\n\timgPath:\n\t{", uid, name, gender));
+        for(String path : imgPath)
+        {
+            builder.append(String.format("\n\t\t%s", path));
+        }
+        builder.append("\n\t}\n\tencodedFacePath:\n\t{");
+        for(String path : encodedFacePath)
+        {
+            builder.append(String.format("\n\t\t%s", path));
+        }
+        builder.append("\n\t}\n}");
+        return builder.toString();
     }
 }
