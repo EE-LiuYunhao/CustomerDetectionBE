@@ -9,26 +9,32 @@ import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CURDTool
 {
-    @Value("sql.driver")
-    private static String driver;
-
-    @Value("sql.url")
-    private static String url;
-
-    @Value("sql.username")
-    private static String userName;
     
-    @Value("sql.password")
-    private static String passWord;
+    private String driver;
+    private String url;
+    private String userName;
+    private String passWord;
 
-    static
+    public CURDTool
+    (
+        @Value("${sql.driver}") String driver, 
+        @Value("${sql.url}") String url, 
+        @Value("${sql.username}") String userName,
+        @Value("${sql.password}") String passWord
+    )
     {
+        this.driver   = driver;
+        this.url      = url;
+        this.userName = userName;
+        this.passWord = passWord;
         try
         {
-            Class.forName(driver);
+            Class.forName(this.driver);
         }
         catch(ClassNotFoundException e)
         {
@@ -40,7 +46,7 @@ public class CURDTool
      /**
       * Get the connection to the DB
       */
-    public static Connection getConnection() throws SQLException
+    public Connection getConnection() throws SQLException
     {
         return DriverManager.getConnection(url, userName, passWord);
     }
@@ -52,7 +58,7 @@ public class CURDTool
      * @return the prepared statement
      * @throws SQLException
      */
-    public static PreparedStatement getPreparedStatment(Connection connection, String sql) throws SQLException
+    public PreparedStatement getPreparedStatment(Connection connection, String sql) throws SQLException
     {
         return connection.prepareStatement(sql);
     }
@@ -63,7 +69,7 @@ public class CURDTool
      * @param statement The relevant SQL statement after whose execution the resource should be deprecated
      * @param resultSet The result set of the `statement` variable
      */
-    public static void release(Connection connection, Statement statement, ResultSet resultSet)
+    public void release(Connection connection, Statement statement, ResultSet resultSet)
     {
         if(resultSet != null)
         {
@@ -93,7 +99,7 @@ public class CURDTool
      * @return The returned INT from preparedStatement.executeUpdate()
      * @throws SQLException
      */
-    public static int update(PreparedStatement statement, Object[] param) throws SQLException
+    public int update(PreparedStatement statement, Object[] param) throws SQLException
     {
         for(int i=0; i<param.length; i++)
         {
@@ -110,7 +116,7 @@ public class CURDTool
      * @return The returned JavaBean List
      * @throws Exception
      */
-    public static List<Object> query(PreparedStatement statement, Object[] param, ResultSetHandler rsh) throws Exception
+    public List<Object> query(PreparedStatement statement, Object[] param, ResultSetHandler rsh) throws Exception
     {
         for(int i=0; i<param.length; i++)
         {

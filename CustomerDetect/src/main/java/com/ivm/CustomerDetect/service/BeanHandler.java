@@ -6,10 +6,17 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Converting the result set from SQL into java bean objects
+ */
 public class BeanHandler implements ResultSetHandler
 {
     private Class<?> classRef;
 
+    /**
+     * Constructor
+     * @param ref The target java bean classtype
+     */
     public BeanHandler(Class<?> ref)
     {
         this.classRef = ref;
