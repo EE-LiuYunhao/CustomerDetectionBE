@@ -16,7 +16,7 @@ public class FaceImagePathModel
     }
     public void setImgId(String value)
     {
-        imgId = Integer.getInteger(value);
+        imgId = Integer.valueOf(value);
     }
 
     public String getImgPath()
@@ -34,7 +34,7 @@ public class FaceImagePathModel
     }
     public void setUid(String value)
     {
-        uid = Integer.getInteger(value);
+        uid = Integer.valueOf(value);
     }
 
     public Integer getFaceId()
@@ -43,7 +43,7 @@ public class FaceImagePathModel
     }
     public void setFaceId(String value)
     {
-        faceId = Integer.getInteger(value);
+        faceId = Integer.valueOf(value);
     }
 
     @Override

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Component
 public class UserDAO implements ReadonlyObjectBaseDAO<UserModel>, WritableObjectBaseDAO<UserModel>
 {
@@ -32,6 +33,7 @@ public class UserDAO implements ReadonlyObjectBaseDAO<UserModel>, WritableObject
     {
         Connection connection = curdTool.getConnection();
         StringBuilder clauseBuilder = new StringBuilder();
+        clauseBuilder.append("SELECT * FROM ");
         clauseBuilder.append(tableName);
         if(whereClause!=null)
         {
@@ -43,14 +45,14 @@ public class UserDAO implements ReadonlyObjectBaseDAO<UserModel>, WritableObject
             clauseBuilder.append(" "+whereClause.get(whereClause.size()-1));
         }
 
-        PreparedStatement statement = curdTool.getPreparedStatment(connection, "SELECT * FROM ?;");
+        PreparedStatement statement = curdTool.getPreparedStatment(connection, clauseBuilder.toString());
         
         ArrayList<UserModel> retVal = new ArrayList<>();
-        for(Object each : curdTool.query(statement, new Object[]{(Object) clauseBuilder.toString()}, new BeanHandler(UserModel.class)))
+        for(Object each : curdTool.query(statement, new Object[]{}, new BeanHandler(UserModel.class)))
         {
             retVal.add((UserModel) each);
         }
-        return null;
+        return retVal;
     }
 
     @Override
@@ -64,14 +66,20 @@ public class UserDAO implements ReadonlyObjectBaseDAO<UserModel>, WritableObject
     @Transactional
     public UserModel retrieveById(Integer id) throws Exception
     {
-        ArrayList<String> allCondition = new ArrayList<String>();
-        allCondition.add(String.format(" uid == %d", id));
-        List<UserModel> resultList = this.retrieveByCondition(allCondition);
-        if(resultList == null || resultList.size()==0)
+        Connection connection = curdTool.getConnection();
+        StringBuilder clauseBuilder = new StringBuilder();
+        clauseBuilder.append("SELECT * FROM ");
+        clauseBuilder.append(tableName);
+        clauseBuilder.append(" WHERE uid = ?");
+
+        PreparedStatement statement = curdTool.getPreparedStatment(connection, clauseBuilder.toString());
+        
+        ArrayList<UserModel> retVal = new ArrayList<>();
+        for(Object each : curdTool.query(statement, new Object[]{id}, new BeanHandler(UserModel.class)))
         {
-            return null;
+            retVal.add((UserModel) each);
         }
-        return resultList.get(0);
+        return retVal.get(0);
     }
 
     
@@ -88,7 +96,7 @@ public class UserDAO implements ReadonlyObjectBaseDAO<UserModel>, WritableObject
             new Object[]
             {
                 null,
-                (Object)user.getGender(),
+                (Object)user.getGender().toString(),
                 (Object)user.getName()
             }
         );
@@ -107,9 +115,9 @@ public class UserDAO implements ReadonlyObjectBaseDAO<UserModel>, WritableObject
             statement,
             new Object[]
             {
-                (Object)user.getGender(),
+                (Object)user.getGender().toString(),
                 (Object)user.getName(),
-                (Object)user.getUid()
+                (Object)user.getUid().toString()
             }
         );
         return true;

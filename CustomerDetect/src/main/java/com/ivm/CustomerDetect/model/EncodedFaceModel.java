@@ -21,7 +21,7 @@ public class EncodedFaceModel
     }
     public void setFaceId(String value)
     {
-        faceId = Integer.getInteger(value);
+        faceId = Integer.valueOf(value);
     }
 
     public Integer getUid()
@@ -30,7 +30,7 @@ public class EncodedFaceModel
     }
     public void setUid(String value)
     {
-        uid = Integer.getInteger(value);
+        uid = Integer.valueOf(value);
     }
 
     public Timestamp getTimestamp()

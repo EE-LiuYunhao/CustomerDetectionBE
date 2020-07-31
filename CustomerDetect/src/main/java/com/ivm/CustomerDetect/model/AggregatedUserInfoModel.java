@@ -19,7 +19,7 @@ public class AggregatedUserInfoModel
     }
     public void setFaceId(String value)
     {
-        faceId = Integer.getInteger(value);
+        faceId = Integer.valueOf(value);
     }
 
     public String getFacePath()
@@ -37,7 +37,7 @@ public class AggregatedUserInfoModel
     }
     public void setImageId(String value)
     {
-        imageId = Integer.getInteger(value);
+        imageId = Integer.valueOf(value);
     }
 
     public String getImagePath()

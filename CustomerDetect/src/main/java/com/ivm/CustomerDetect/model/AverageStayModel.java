@@ -17,7 +17,7 @@ public class AverageStayModel
     }
     public void setUid(String value)
     {
-        uid = Integer.getInteger(value);
+        uid = Integer.valueOf(value);
     }
 
     public float getAverageStay()

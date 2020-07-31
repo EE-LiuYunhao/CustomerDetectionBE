@@ -14,7 +14,7 @@ public class UserModel
 
     public void setUid(String value)
     {
-        uid = Integer.getInteger(value);
+        uid = Integer.valueOf(value);
     }
     public Integer getUid()
     {

@@ -17,7 +17,7 @@ public class StayRecordModel
     }
     public void setRecordId(String value)
     {
-        recordId = Integer.getInteger(value);
+        recordId = Integer.valueOf(value);
     }
 
     public Timestamp getDatetimeIn()
@@ -44,7 +44,7 @@ public class StayRecordModel
     }
     public void setUid(String value)
     {
-        uid = Integer.getInteger(value);
+        uid = Integer.valueOf(value);
     }
 
     @Override
