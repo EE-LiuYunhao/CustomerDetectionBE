@@ -17,9 +17,9 @@ public class AggregatedUserInfoModel
     {
         return faceId;
     }
-    public void setFaceId(Integer value)
+    public void setFaceId(String value)
     {
-        faceId = value;
+        faceId = Integer.getInteger(value);
     }
 
     public String getFacePath()
@@ -35,9 +35,9 @@ public class AggregatedUserInfoModel
     {
         return imageId;
     }
-    public void setImageId(Integer value)
+    public void setImageId(String value)
     {
-        imageId = value;
+        imageId = Integer.getInteger(value);
     }
 
     public String getImagePath()

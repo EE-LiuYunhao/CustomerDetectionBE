@@ -1,7 +1,7 @@
 package com.ivm.CustomerDetect.model;
 
 import java.beans.JavaBean;
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 @JavaBean
 public class StayRecordModel
@@ -15,36 +15,36 @@ public class StayRecordModel
     {
         return recordId;
     }
-    public void setRecordId(Integer value)
+    public void setRecordId(String value)
     {
-        recordId = value;
+        recordId = Integer.getInteger(value);
     }
 
     public Timestamp getDatetimeIn()
     {
         return datetimeIn;
     }
-    public void setDatetimeIn(Timestamp value)
+    public void setDatetimeIn(String value)
     {
-        datetimeIn = value;
+        datetimeIn = Timestamp.valueOf(value);
     }
 
     public Timestamp getDatetimeOut()
     {
         return datetimeOut;
     }
-    public void setDatetimeOut(Timestamp value)
+    public void setDatetimeOut(String value)
     {
-        datetimeOut = value;
+        datetimeOut = Timestamp.valueOf(value);
     }
 
     public Integer getUid()
     {
         return uid;
     }
-    public void setUid(Integer value)
+    public void setUid(String value)
     {
-        uid = value;
+        uid = Integer.getInteger(value);
     }
 
     @Override

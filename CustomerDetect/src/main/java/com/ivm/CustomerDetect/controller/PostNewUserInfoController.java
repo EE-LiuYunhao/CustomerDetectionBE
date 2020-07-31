@@ -14,7 +14,7 @@ public class PostNewUserInfoController
     @RequestMapping(value="/user/insert", method=RequestMethod.POST)
     public void insertOneById(@RequestBody UserModel inputUser)
     {
-        inputUser.setUid(inputUser.hashCode());
+        inputUser.setUid(""+inputUser.hashCode());
     }
 
     @RequestMapping(value="/user/multiInsert", method=RequestMethod.POST)
@@ -22,7 +22,7 @@ public class PostNewUserInfoController
     {
         for(UserModel user : inputUsers)
         {
-            user.setUid(user.hashCode());
+            user.setUid(""+user.hashCode());
         }
     }
 }

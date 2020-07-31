@@ -12,9 +12,9 @@ public class UserModel
     private String name;
     private Character gender;
 
-    public void setUid(Integer value)
+    public void setUid(String value)
     {
-        uid = value;
+        uid = Integer.getInteger(value);
     }
     public Integer getUid()
     {
@@ -30,9 +30,9 @@ public class UserModel
         return name;
     }
 
-    public void setGender(Character value)
+    public void setGender(String value)
     {
-        gender = value;
+        gender = value.charAt(0);
     }
     public Character getGender()
     {

@@ -19,27 +19,27 @@ public class EncodedFaceModel
     {
         return faceId;
     }
-    public void setFaceId(Integer value)
+    public void setFaceId(String value)
     {
-        faceId = value;
+        faceId = Integer.getInteger(value);
     }
 
     public Integer getUid()
     {
         return uid;
     }
-    public void setUid(Integer value)
+    public void setUid(String value)
     {
-        uid = value;
+        uid = Integer.getInteger(value);
     }
 
     public Timestamp getTimestamp()
     {
         return timestamp;
     }
-    public void setTimestamp(Timestamp value)
+    public void setTimestamp(String value)
     {
-        timestamp = value;
+        timestamp = Timestamp.valueOf(value);
     }
 
     public String getEncodedFacePath()

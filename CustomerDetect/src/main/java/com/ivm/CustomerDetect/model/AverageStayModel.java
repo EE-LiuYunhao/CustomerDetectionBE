@@ -15,18 +15,18 @@ public class AverageStayModel
     {
         return uid;
     }
-    public void setUid(Integer value)
+    public void setUid(String value)
     {
-        uid = value;
+        uid = Integer.getInteger(value);
     }
 
     public float getAverageStay()
     {
         return averageStay;
     }
-    public void setAverageStay(float value)
+    public void setAverageStay(String value)
     {
-        averageStay = value;
+        averageStay = Float.valueOf(value);
     }
 
     @Override

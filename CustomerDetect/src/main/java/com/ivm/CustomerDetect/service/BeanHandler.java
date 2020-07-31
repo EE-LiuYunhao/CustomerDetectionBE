@@ -1,6 +1,7 @@
 package com.ivm.CustomerDetect.service;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
@@ -35,8 +36,9 @@ public class BeanHandler implements ResultSetHandler
                 String columnName = resultSetMetaData.getColumnName(i+1);
                 String value      = resultSet.getString(i+1);
                 Field field       = classRef.getDeclaredField(columnName);
-                field.setAccessible(true);
-                field.set(bean, value);
+                Method setter = bean.getClass().getMethod("set"+ Character.toUpperCase(field.getName().charAt(0)) + field.getName().substring(1), String.class);
+                setter.setAccessible(true);
+                setter.invoke(bean, value);
             }
             results.add(bean);
         }
