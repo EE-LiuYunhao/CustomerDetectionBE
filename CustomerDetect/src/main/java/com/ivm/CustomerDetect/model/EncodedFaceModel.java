@@ -33,11 +33,11 @@ public class EncodedFaceModel
         uid = Integer.valueOf(value);
     }
 
-    public Timestamp getTimestamp()
+    public Timestamp getTimeStamp()
     {
         return timestamp;
     }
-    public void setTimestamp(String value)
+    public void setTimeStamp(String value)
     {
         timestamp = Timestamp.valueOf(value);
     }
