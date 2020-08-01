@@ -22,29 +22,29 @@ public class AggregatedUserInfoModel
         faceId = Integer.valueOf(value);
     }
 
-    public String getFacePath()
+    public String getEncodedFacePath()
     {
         return facePath;
     }
-    public void setFacePath(String value)
+    public void setEncodedFacePath(String value)
     {
         facePath = value;
     }
 
-    public Integer getImageId()
+    public Integer getImgId()
     {
         return imageId;
     }
-    public void setImageId(String value)
+    public void setImgId(String value)
     {
         imageId = Integer.valueOf(value);
     }
 
-    public String getImagePath()
+    public String getImgPath()
     {
         return imagePath;
     }
-    public void setImagePath(String value)
+    public void setImgPath(String value)
     {
         imagePath = value;
     }
