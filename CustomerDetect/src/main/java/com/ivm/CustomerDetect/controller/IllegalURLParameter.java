@@ -5,6 +5,7 @@ public class IllegalURLParameter extends Exception
 
     private static final long serialVersionUID = -3345106165767373757L;
     private String msg = "Illegal URL parameter(s)";
+    private String url = "";
 
     public IllegalURLParameter(){};
     public IllegalURLParameter(String msg)
@@ -25,6 +26,6 @@ public class IllegalURLParameter extends Exception
     @Override
     public String getLocalizedMessage()
     {
-        return msg;
+        return url;
     }
 }
