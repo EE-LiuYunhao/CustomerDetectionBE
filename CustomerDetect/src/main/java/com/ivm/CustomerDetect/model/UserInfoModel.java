@@ -15,7 +15,7 @@ public class UserInfoModel
     private Character gender;
     private String [] imgPath;
     private String [] encodedFacePath;
-    private Long avgStay; // in minutes
+    private Float avgStay; // in minutes
 
     public void setUid(Integer value)
     {
@@ -62,11 +62,11 @@ public class UserInfoModel
         return encodedFacePath;
     }
 
-    public void setAvgStay(Long value)
+    public void setAvgStay(Float value)
     {
         avgStay = value;
     }
-    public Long getAvgStay()
+    public Float getAvgStay()
     {
         return avgStay;
     }

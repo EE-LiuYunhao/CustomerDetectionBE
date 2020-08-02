@@ -1,7 +1,20 @@
 package com.ivm.CustomerDetect.controller;
 
-import com.ivm.CustomerDetect.model.UserInfoModel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import com.ivm.CustomerDetect.model.AverageStayModel;
+import com.ivm.CustomerDetect.model.EncodedFaceModel;
+import com.ivm.CustomerDetect.model.FaceImagePathModel;
+import com.ivm.CustomerDetect.model.UserInfoModel;
+import com.ivm.CustomerDetect.model.UserModel;
+import com.ivm.CustomerDetect.service.DAO.EncodedFaceDAO;
+import com.ivm.CustomerDetect.service.DAO.FaceImgPathDAO;
+import com.ivm.CustomerDetect.service.DAO.ReadonlyAverageStay;
+import com.ivm.CustomerDetect.service.DAO.UserDAO;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,51 +23,90 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GetUserInfoController
 {
+    @Autowired
+    private UserDAO userDao;
+    @Autowired
+    private FaceImgPathDAO faceImgPathDao;
+    @Autowired
+    private EncodedFaceDAO encodedFaceDao;
+    @Autowired
+    private ReadonlyAverageStay averageStayDao;
+
+
+    private void setRelevantInfoForModel(UserInfoModel model) throws Exception
+    {
+        Integer uid = model.getUid();
+
+        List<String> whereClause = new ArrayList<>();
+        whereClause.add("uid = "+uid);
+        List<String> pathList = new ArrayList<>();
+
+        List<EncodedFaceModel> facePaths = encodedFaceDao.retrieveByCondition(whereClause);
+        if(facePaths.size()!=0)
+            facePaths.forEach( eachPath -> pathList.add(eachPath.getEncodedFacePath()) );
+        model.setEncodedFacePath(pathList.toArray(new String[pathList.size()]));
+
+
+        List<FaceImagePathModel> faceImagePaths = faceImgPathDao.retrieveByCondition(whereClause);
+        if(faceImagePaths.size() != 0)
+        {
+            pathList.clear();
+            faceImagePaths.forEach( eachPath -> pathList.add(eachPath.getImgPath()) );
+        }
+        model.setImgPath(pathList.toArray(new String[pathList.size()]));
+
+        AverageStayModel stayEntry = averageStayDao.retrieveById(uid);
+        model.setAvgStay(stayEntry.getAverageStay());
+    }
+
     @RequestMapping(value="/user/uid/{uid}")
-    public UserInfoModel retriveUserInfoById(@PathVariable("uid") Integer uid)
+    public UserInfoModel retriveUserInfoById(@PathVariable("uid") Integer uid) throws Exception
     {
         UserInfoModel model = new UserInfoModel();
+        UserModel user = userDao.retrieveById(uid);
+        model.setName(user.getName());
+        model.setUid(user.getUid());
+        model.setGender(user.getGender());
 
-        model.setUid(uid);
-        model.setName( "David");
-        model.setGender('M');
-        model.setImgPath(new String []{"/image/0593f23ade.jpg"});
-        model.setEncodedFacePath(new String [] {"/face/445ee22110a.mat"});
-        model.setAvgStay(3422L);
+        setRelevantInfoForModel(model);
         return model;
     }
     
     @RequestMapping(value="/user/name/{name}")
-    public UserInfoModel [] retriveUserInfoByName(@PathVariable("name") String uName)
+    public UserInfoModel [] retriveUserInfoByName(@PathVariable("name") String uName) throws Exception
     {
-        UserInfoModel model = new UserInfoModel();
+        List<UserInfoModel> models = new ArrayList<>();
+        for(UserModel eachModel : userDao.retrieveByCondition( Arrays.asList(new String []{"name = '"+uName+"'"}) ))
+        {
+            UserInfoModel oneUser = new UserInfoModel();
+            oneUser.setName(eachModel.getName());
+            oneUser.setGender(eachModel.getGender());
+            oneUser.setUid(eachModel.getUid());
 
-        model.setUid(3);
-        model.setName( uName );
-        model.setGender('M');
-        model.setImgPath(new String []{"/image/0593f23ade.jpg"});
-        model.setEncodedFacePath(new String [] {"/face/445ee22110a.mat"});
-        model.setAvgStay(3422L);
-        return new UserInfoModel[]{model};
+            setRelevantInfoForModel(oneUser);
+        }
+        return models.toArray(new UserInfoModel[models.size()]);
     }
     
     @RequestMapping(value="/user/lists")
-    public UserInfoModel [] retrieveUserInfoAll()
+    public UserInfoModel [] retrieveUserInfoAll() throws Exception
     {
-        UserInfoModel model = new UserInfoModel();
+        List<UserInfoModel> models = new ArrayList<>();
+        for( UserModel eachModel : userDao.retrieveAll() )
+        {
+            UserInfoModel oneUser = new UserInfoModel();
+            oneUser.setName(eachModel.getName());
+            oneUser.setGender(eachModel.getGender());
+            oneUser.setUid(eachModel.getUid());
 
-        model.setUid(3);
-        model.setName( "David");
-        model.setGender('M');
-        model.setImgPath(new String []{"/image/0593f23ade.jpg"});
-        model.setEncodedFacePath(new String [] {"/face/445ee22110a.mat"});
-        model.setAvgStay(3422L);
-        return new UserInfoModel[]{model};
+            setRelevantInfoForModel(oneUser);
+        }
+        return models.toArray(new UserInfoModel[models.size()]);
     }
 
     @RequestMapping(value="/user/count")
-    public Integer countCurrentUsers()
+    public Integer countCurrentUsers() throws Exception
     {
-        return 0;
+        return userDao.retrieveAll().size();
     }
 }

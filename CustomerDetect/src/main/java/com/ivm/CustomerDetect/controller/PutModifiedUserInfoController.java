@@ -1,13 +1,22 @@
 package com.ivm.CustomerDetect.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.File;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ivm.CustomerDetect.model.EncodedFaceModel;
+import com.ivm.CustomerDetect.model.FaceImagePathModel;
 import com.ivm.CustomerDetect.model.UserModel;
+import com.ivm.CustomerDetect.service.DAO.EncodedFaceDAO;
+import com.ivm.CustomerDetect.service.DAO.FaceImgPathDAO;
+import com.ivm.CustomerDetect.service.DAO.UserDAO;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,73 +28,80 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class PutModifiedUserInfoController
 {
+    @Autowired
+    private UserDAO userDao;
+    @Autowired
+    private FaceImgPathDAO faceImgPathDao;
+    @Autowired
+    private EncodedFaceDAO encodedFaceDao;
+
+    @Value("${static.img}")
+    private String imageFolder;
+
+    @Value("${static.encodedFace}")
+    private String faceFolder;
+
     @RequestMapping(value="/user/modify/{uid}", method=RequestMethod.PUT)
-    public void modifyUserInfoById(@PathVariable Integer uid, @RequestBody UserModel newInfo, HttpServletResponse response)
+    public void modifyUserInfoById(@PathVariable Integer uid, @RequestBody UserModel newInfo) throws SQLException
     {
-        if(newInfo.getUid() != uid)
-        {
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-type", "text/html;charset=UTF-8");
-            PrintWriter out = null;
-            try
-            {
-                out = response.getWriter();
-                out.print("<script>alert('The user id does not match');window.location.href='/user/modify/"
-                + uid
-                +"';</script>");
-                out.flush();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            finally
-            {
-                IOUtils.closeQuietly(out);
-            }
-        }
+        newInfo.setUid(""+uid);
+        userDao.createModel(newInfo);
     }
     
     @RequestMapping(value="/user/uploadImg/{uid}", method=RequestMethod.PUT)
+    @Transactional
     public void acceptImageUploading
     (
-        @PathVariable Integer uid,
+        @PathVariable String uid,
         @RequestParam("image") MultipartFile multipartFile,
         @RequestParam("type") String type,
+        @RequestParam(name="faceId", required=false) String faceId,
         HttpServletResponse response
-    )
+    ) throws Exception
     {
-        if(type != "encodedFace" && type != "image")
+        if(type == null || !type.equals("encodedFace") && !type.equals("image"))
         {
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Content-type", "text/html;charset=UTF-8");
-            PrintWriter out = null;
-            try
+            throw new IllegalURLParameter
+            (
+                "/user/uploadImg/"+uid+"?type="+type+ faceId==null? "" : ("&faceId="+faceId), 
+                "The required parameter `type` should either be `encodedFace` or `image`"
+            );
+        }
+        else
+        {
+            String extensionName = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf('.'));
+            if (type.equals("image") && faceId != null)
             {
-                out = response.getWriter();
-                out.print("<script>alert('The type:"
-                +type
-                +" is not recognazied');window.location.href='/user/uploadImg/"
-                + uid
-                +"';</script>");
-                out.flush();
+                File file = new File( imageFolder+ '/' + (multipartFile.getOriginalFilename()+uid).hashCode() + extensionName );
+                multipartFile.transferTo(file);
+
+                FaceImagePathModel image = new FaceImagePathModel();
+                image.setFaceId(faceId);
+                image.setImgPath(file.toPath().toString());
+                image.setUid(uid);
+                faceImgPathDao.createModel(image);
             }
-            catch (IOException e)
+            else if (type.equals("encodedFace"))
             {
-                e.printStackTrace();
-            }
-            finally
+                File file = new File( faceFolder+ '/' + (multipartFile.getOriginalFilename()+uid).hashCode() + extensionName );
+                multipartFile.transferTo(file);
+
+                EncodedFaceModel face = new EncodedFaceModel();
+                face.setUid(uid);
+                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = new Date(System.currentTimeMillis());
+                face.setTimeStamp(formatter.format(date));
+                face.setEncodedFacePath(file.toPath().toString());
+                encodedFaceDao.createModel(face);
+            } // else if
+            else
             {
-                IOUtils.closeQuietly(out);
-            }
-        }        
-        // try
-        // {
-        //     File file = new File( type+ '/' + multipartFile.getOriginalFilename());
-        //     multipartFile.transferTo(file);
-        // } catch (IOException e)
-        // {
-        //     e.printStackTrace();
-        // }
-    }
+                throw new IllegalURLParameter
+                (
+                    "/user/uploadImg/"+uid+"?type="+type+ faceId==null? "" : ("&faceId="+faceId), 
+                    "`faceId` is required when the type is set to be `image`"
+                );
+            } // else
+        } // else
+    } // acceptImageUploading
 }

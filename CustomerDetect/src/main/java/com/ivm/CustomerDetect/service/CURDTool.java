@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CURDTool
 {
-    
     private String driver;
     private String url;
     private String userName;
