@@ -59,7 +59,8 @@ public class GetUserInfoController
         model.setImgPath(pathList.toArray(new String[pathList.size()]));
 
         AverageStayModel stayEntry = averageStayDao.retrieveById(uid);
-        model.setAvgStay(stayEntry.getAverageStay());
+        if(stayEntry != null)
+            model.setAvgStay(stayEntry.getAverageStay());
     }
 
     @RequestMapping(value="/visitor/uid/{uid}")
@@ -67,9 +68,14 @@ public class GetUserInfoController
     {
         UserInfoModel model = new UserInfoModel();
         UserModel user = userDao.retrieveById(uid);
-        model.setName(user.getName());
-        model.setUid(user.getUid());
-        model.setGender(user.getGender());
+        if(user != null)
+        {
+            model.setName(user.getName());
+            model.setUid(user.getUid());
+            model.setGender(user.getGender());
+        }
+        else
+            throw new IllegalURLParameter("/visitor/uid/"+uid,"The UID cannot be found");
 
         setRelevantInfoForModel(model);
         return model;
@@ -79,6 +85,11 @@ public class GetUserInfoController
     public UserInfoModel [] retriveUserInfoByName(@PathVariable("name") String uName) throws Exception
     {
         List<UserInfoModel> models = new ArrayList<>();
+        while(uName.contains("'"))
+        {
+            int id = uName.indexOf('\'');
+            uName = uName.substring(0, id) + uName.substring(id+1);
+        }
         for(UserModel eachModel : userDao.retrieveByCondition( Arrays.asList(new String []{"name = '"+uName+"'"}) ))
         {
             UserInfoModel oneUser = new UserInfoModel();
@@ -103,6 +114,7 @@ public class GetUserInfoController
             oneUser.setUid(eachModel.getUid());
 
             setRelevantInfoForModel(oneUser);
+            models.add(oneUser);
         }
         return models.toArray(new UserInfoModel[models.size()]);
     }

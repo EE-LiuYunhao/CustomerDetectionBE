@@ -75,7 +75,7 @@ public class ReadonlyAverageStay implements ReadonlyObjectBaseDAO<AverageStayMod
         {
             retVal.add((AverageStayModel) each);
         }
-        return retVal.get(0);
+        return retVal.size()==0 ? null : retVal.get(0);
     }
     
 }

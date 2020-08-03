@@ -22,6 +22,13 @@ public class PostNewUserInfoController
     {
         if(inputUser.getName() == null)
             return;
+        
+        while(inputUser.getName().contains("'"))
+        {
+            int id = inputUser.getName().indexOf('\'');
+            inputUser.setName(inputUser.getName().substring(0, id) + inputUser.getName().substring(id+1));
+        }
+
         if(inputUser.getGender() == null)
             inputUser.setGender("U"); //U stands for Unknown
         if(inputUser.getUid()!=null && userDao.retrieveById(inputUser.getUid())!=null)

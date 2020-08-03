@@ -78,7 +78,7 @@ public class StayRecordDAO implements ReadonlyObjectBaseDAO<StayRecordModel>, Wr
         {
             retVal.add((StayRecordModel) each);
         }
-        return retVal.get(0);
+        return retVal.size()==0 ? null : retVal.get(0);
     }
 
     @Override

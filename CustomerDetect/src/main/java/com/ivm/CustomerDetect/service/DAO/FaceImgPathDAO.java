@@ -81,7 +81,7 @@ public class FaceImgPathDAO
         {
             retVal.add((FaceImagePathModel) each);
         }
-        return retVal.get(0);
+        return retVal.size()==0 ? null : retVal.get(0);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class FaceImgPathDAO
         try
         {
             EncodedFaceModel faceEntry = faceDao.retrieveById(image.getFaceId());
-            if(faceEntry.getUid() != image.getUid())
+            if(faceDao == null || faceEntry.getUid() != image.getUid())
             {
                 return false;
             }
@@ -132,7 +132,7 @@ public class FaceImgPathDAO
         try
         {
             EncodedFaceModel faceEntry = faceDao.retrieveById(image.getFaceId());
-            if(faceEntry.getUid() != image.getUid())
+            if(faceEntry == null || faceEntry.getUid() != image.getUid())
             {
                 return false;
             }

@@ -79,7 +79,7 @@ public class UserDAO implements ReadonlyObjectBaseDAO<UserModel>, WritableObject
         {
             retVal.add((UserModel) each);
         }
-        return retVal.get(0);
+        return retVal.size()==0 ? null : retVal.get(0);
     }
 
     
