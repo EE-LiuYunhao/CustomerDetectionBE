@@ -16,7 +16,7 @@ public class DeleteUserInfoController
     @Autowired
     private UserDAO userDao;
 
-    @RequestMapping(value="/user/{uid}", method=RequestMethod.DELETE)
+    @RequestMapping(value="/visitor/{uid}", method=RequestMethod.DELETE)
     public void deleteUserById(@PathVariable("uid") Integer uid) throws SQLException
     {
         userDao.deleteModel(uid);

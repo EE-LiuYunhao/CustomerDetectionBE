@@ -12,6 +12,7 @@ import com.ivm.CustomerDetect.model.UserModel;
 import com.ivm.CustomerDetect.service.DAO.EncodedFaceDAO;
 import com.ivm.CustomerDetect.service.DAO.FaceImgPathDAO;
 import com.ivm.CustomerDetect.service.DAO.ReadonlyAverageStay;
+import com.ivm.CustomerDetect.service.DAO.StayRecordDAO;
 import com.ivm.CustomerDetect.service.DAO.UserDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class GetUserInfoController
     private EncodedFaceDAO encodedFaceDao;
     @Autowired
     private ReadonlyAverageStay averageStayDao;
+    @Autowired
+    private StayRecordDAO stayRecordDAO;
 
 
     private void setRelevantInfoForModel(UserInfoModel model) throws Exception
@@ -59,7 +62,7 @@ public class GetUserInfoController
         model.setAvgStay(stayEntry.getAverageStay());
     }
 
-    @RequestMapping(value="/user/uid/{uid}")
+    @RequestMapping(value="/visitor/uid/{uid}")
     public UserInfoModel retriveUserInfoById(@PathVariable("uid") Integer uid) throws Exception
     {
         UserInfoModel model = new UserInfoModel();
@@ -72,7 +75,7 @@ public class GetUserInfoController
         return model;
     }
     
-    @RequestMapping(value="/user/name/{name}")
+    @RequestMapping(value="/visitor/name/{name}")
     public UserInfoModel [] retriveUserInfoByName(@PathVariable("name") String uName) throws Exception
     {
         List<UserInfoModel> models = new ArrayList<>();
@@ -88,7 +91,7 @@ public class GetUserInfoController
         return models.toArray(new UserInfoModel[models.size()]);
     }
     
-    @RequestMapping(value="/user/lists")
+    @RequestMapping(value="/visitor/lists")
     public UserInfoModel [] retrieveUserInfoAll() throws Exception
     {
         List<UserInfoModel> models = new ArrayList<>();
@@ -104,9 +107,10 @@ public class GetUserInfoController
         return models.toArray(new UserInfoModel[models.size()]);
     }
 
-    @RequestMapping(value="/user/count")
+    @RequestMapping(value="/visitor/count")
     public Integer countCurrentUsers() throws Exception
     {
-        return userDao.retrieveAll().size();
+        String [] whereClause = new String[]{"datetimeOut is NULL"};
+        return stayRecordDAO.retrieveByCondition(Arrays.asList(whereClause)).size();
     }
 }

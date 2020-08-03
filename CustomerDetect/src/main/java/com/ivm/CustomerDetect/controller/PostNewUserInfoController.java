@@ -17,7 +17,7 @@ public class PostNewUserInfoController
     @Autowired
     private UserDAO userDao;
 
-    @RequestMapping(value="/user/insert", method=RequestMethod.POST)
+    @RequestMapping(value="/visitor/insert", method=RequestMethod.POST)
     public void insertOneById(@RequestBody UserModel inputUser) throws Exception
     {
         if(inputUser.getName() == null)
@@ -34,7 +34,7 @@ public class PostNewUserInfoController
         }
     }
 
-    @RequestMapping(value="/user/multiInsert", method=RequestMethod.POST)
+    @RequestMapping(value="/visitor/multiInsert", method=RequestMethod.POST)
     @Transactional
     public void insertManyById(@RequestBody UserModel [] inputUsers) throws Exception
     {

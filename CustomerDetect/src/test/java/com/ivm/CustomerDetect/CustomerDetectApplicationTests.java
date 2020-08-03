@@ -18,7 +18,7 @@ class CustomerDetectApplicationTests
 	@Test
 	void test_get_UserInfoModelByUid()
 	{
-		final ResponseEntity<UserInfoModel> model = template.getForEntity("/user/uid/{uid}", UserInfoModel.class, 3);
+		final ResponseEntity<UserInfoModel> model = template.getForEntity("/visitor/uid/{uid}", UserInfoModel.class, 3);
 		Assert.isTrue(model.hasBody(), "The GET /user/uid/3 methods returns nothing");
 		Assert.notNull(model.getBody(), "Null object");
 		Assert.isTrue(model.getBody().getUid()==3, "Incorrect user id");
@@ -28,7 +28,7 @@ class CustomerDetectApplicationTests
 	@Test
 	void test_get_UserInfoModelByName()
 	{
-		final ResponseEntity<UserInfoModel[]> model = template.getForEntity("/user/name/{uName}", UserInfoModel[].class, "David");
+		final ResponseEntity<UserInfoModel[]> model = template.getForEntity("/visitor/name/{uName}", UserInfoModel[].class, "David");
 		Assert.isTrue(model.hasBody(), "The GET /user/uid/David methods returns nothing");
 		Assert.notNull(model.getBody(), "Null object");
 		for(UserInfoModel eachModel : model.getBody())
@@ -42,7 +42,7 @@ class CustomerDetectApplicationTests
 	@Test
 	void test_get_AllUserInfoModel()
 	{
-		final ResponseEntity<UserInfoModel[]> model = template.getForEntity("/user/lists", UserInfoModel[].class);
+		final ResponseEntity<UserInfoModel[]> model = template.getForEntity("/visitor/lists", UserInfoModel[].class);
 		Assert.isTrue(model.hasBody(), "The GET /user/lists methods returns nothing");
 		Assert.notNull(model.getBody(), "Null object");
 		for(UserInfoModel eachModel : model.getBody())

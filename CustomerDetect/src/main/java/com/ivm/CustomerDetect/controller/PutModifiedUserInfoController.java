@@ -41,14 +41,14 @@ public class PutModifiedUserInfoController
     @Value("${static.encodedFace}")
     private String faceFolder;
 
-    @RequestMapping(value="/user/modify/{uid}", method=RequestMethod.PUT)
+    @RequestMapping(value="/visitor/modify/{uid}", method=RequestMethod.PUT)
     public void modifyUserInfoById(@PathVariable Integer uid, @RequestBody UserModel newInfo) throws SQLException
     {
         newInfo.setUid(""+uid);
         userDao.createModel(newInfo);
     }
     
-    @RequestMapping(value="/user/uploadImg/{uid}", method=RequestMethod.PUT)
+    @RequestMapping(value="/visitor/uploadImg/{uid}", method=RequestMethod.PUT)
     @Transactional
     public void acceptImageUploading
     (
@@ -63,7 +63,7 @@ public class PutModifiedUserInfoController
         {
             throw new IllegalURLParameter
             (
-                "/user/uploadImg/"+uid+"?type="+type+ faceId==null? "" : ("&faceId="+faceId), 
+                "/visitor/uploadImg/"+uid+"?type="+type+ faceId==null? "" : ("&faceId="+faceId), 
                 "The required parameter `type` should either be `encodedFace` or `image`"
             );
         }
@@ -98,7 +98,7 @@ public class PutModifiedUserInfoController
             {
                 throw new IllegalURLParameter
                 (
-                    "/user/uploadImg/"+uid+"?type="+type+ faceId==null? "" : ("&faceId="+faceId), 
+                    "/visitor/uploadImg/"+uid+"?type="+type+ faceId==null? "" : ("&faceId="+faceId), 
                     "`faceId` is required when the type is set to be `image`"
                 );
             } // else
