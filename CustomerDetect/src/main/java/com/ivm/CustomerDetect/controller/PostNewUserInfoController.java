@@ -20,8 +20,8 @@ public class PostNewUserInfoController
     @RequestMapping(value="/visitor/insert", method=RequestMethod.POST)
     public void insertOneById(@RequestBody UserModel inputUser) throws Exception
     {
-        if(inputUser.getName() == null)
-            return;
+        if(inputUser == null || inputUser.getName() == null)
+            throw new IllegalURLParameter("/visitor/insert","Null request body or null name");
         
         while(inputUser.getName().contains("'"))
         {
@@ -37,6 +37,7 @@ public class PostNewUserInfoController
         }
         else
         {
+            inputUser.setUid("0");
             userDao.createModel(inputUser);
         }
     }
@@ -45,6 +46,8 @@ public class PostNewUserInfoController
     @Transactional
     public void insertManyById(@RequestBody UserModel [] inputUsers) throws Exception
     {
+        if(inputUsers == null || inputUsers.length == 0)
+            throw new IllegalURLParameter("/visitor/multiInsert","Null request body or empty list");
         for(UserModel user : inputUsers)
         {
             insertOneById(user);

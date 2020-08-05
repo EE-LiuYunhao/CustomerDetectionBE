@@ -1,17 +1,20 @@
 package com.ivm.CustomerDetect.controller;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.ivm.CustomerDetect.model.EncodedFaceModel;
 import com.ivm.CustomerDetect.model.FaceImagePathModel;
+import com.ivm.CustomerDetect.model.StayRecordModel;
 import com.ivm.CustomerDetect.model.UserModel;
 import com.ivm.CustomerDetect.service.DAO.EncodedFaceDAO;
 import com.ivm.CustomerDetect.service.DAO.FaceImgPathDAO;
+import com.ivm.CustomerDetect.service.DAO.StayRecordDAO;
 import com.ivm.CustomerDetect.service.DAO.UserDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @RestController
 public class PutModifiedUserInfoController
 {
@@ -34,6 +38,8 @@ public class PutModifiedUserInfoController
     private FaceImgPathDAO faceImgPathDao;
     @Autowired
     private EncodedFaceDAO encodedFaceDao;
+    @Autowired
+    private StayRecordDAO stayRecordDAO;
 
     @Value("${static.img}")
     private String imageFolder;
@@ -41,11 +47,45 @@ public class PutModifiedUserInfoController
     @Value("${static.encodedFace}")
     private String faceFolder;
 
-    @RequestMapping(value="/visitor/modify/{uid}", method=RequestMethod.PUT)
-    public void modifyUserInfoById(@PathVariable Integer uid, @RequestBody UserModel newInfo) throws SQLException
+    @RequestMapping(value = "/visitor/stay", method=RequestMethod.PUT)
+    @Transactional
+    public void insertOrModifyStayRecord(@RequestBody StayRecordModel newStay) throws Exception
     {
+        if(newStay == null)
+            throw new IllegalURLParameter("/visitor/stay", "Empty stay entry");
+        //case one & two: leave time is null while the other two are not / or both not null
+        if(newStay.getDatetimeIn()!=null && newStay.getUid()!=null)
+        {
+            newStay.setRecordId("0");
+            stayRecordDAO.createModel(newStay);
+            return;
+        }
+        //case three: only leave time
+        if(newStay.getDatetimeOut()!=null && newStay.getDatetimeIn()==null && newStay.getUid()==null)
+        {
+            List<StayRecordModel> collection = stayRecordDAO.retrieveByCondition(Arrays.asList(new String[]{"datetimeOut is NULL"}));
+            if(collection == null ||collection.size()==0)
+                return;
+            StayRecordModel firstVisitor = collection.get(0);
+            firstVisitor.setDatetimeOut(newStay.getDatetimeOut().toString());
+            stayRecordDAO.updateModel(firstVisitor);
+            return;
+        }
+        //otherwise: excetion
+        throw new IllegalURLParameter("/visitor/stay", "Invalid entry");
+    }
+
+
+    @RequestMapping(value="/visitor/modify/{uid}", method=RequestMethod.PUT)
+    @Transactional
+    public void modifyUserInfoById(@PathVariable Integer uid, @RequestBody UserModel newInfo) throws Exception
+    {
+        if(newInfo == null)
+            throw new IllegalURLParameter("/visitor/modify/"+uid,"Null request body");
         newInfo.setUid(""+uid);
-        userDao.createModel(newInfo);
+        if(userDao.retrieveById(uid) == null)
+        throw new IllegalURLParameter("/visitor/modify/"+uid,"Cannot find the target visitor");
+        userDao.updateModel(newInfo);
     }
     
     @RequestMapping(value="/visitor/uploadImg/{uid}", method=RequestMethod.PUT)
