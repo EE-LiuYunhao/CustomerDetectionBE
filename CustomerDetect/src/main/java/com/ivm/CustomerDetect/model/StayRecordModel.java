@@ -3,11 +3,22 @@ package com.ivm.CustomerDetect.model;
 import java.beans.JavaBean;
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 @JavaBean
+@JsonInclude(Include.NON_NULL)
 public class StayRecordModel
 {
     private Integer recordId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp datetimeIn;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp datetimeOut;
     private Integer uid;
 
@@ -52,8 +63,9 @@ public class StayRecordModel
     {
         return String.format(
             "{recordId: %d, datetimeIn: %s, datetimeOUt: %s, uid: %d}",
-            recordId, datetimeIn.toString(),
-            datetimeOut.toString(),
+            recordId,
+            datetimeIn == null ?  "" : datetimeIn.toString(),
+            datetimeOut == null ? "" : datetimeOut.toString(),
             uid
         );
     }

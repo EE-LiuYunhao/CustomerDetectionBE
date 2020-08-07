@@ -35,7 +35,7 @@ public class BeanHandler implements ResultSetHandler
                 String columnName = resultSetMetaData.getColumnName(i+1);
                 String value      = resultSet.getString(i+1);
                 if(value == null)
-                    break;
+                    continue;
                 Method setter = bean.getClass().getMethod("set"+ Character.toUpperCase(columnName.charAt(0)) + columnName.substring(1), String.class);
                 setter.setAccessible(true);
                 setter.invoke(bean, value);

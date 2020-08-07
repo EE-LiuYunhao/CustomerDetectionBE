@@ -16,6 +16,7 @@ public class UserInfoModel
     private String [] imgPath;
     private String [] encodedFacePath;
     private Float avgStay; // in minutes
+    private StayRecordModel [] records;
 
     public void setUid(Integer value)
     {
@@ -71,6 +72,15 @@ public class UserInfoModel
         return avgStay;
     }
 
+    public void setRecords(StayRecordModel[] records)
+    {
+        this.records = records;
+    }
+    public StayRecordModel[] getRecords()
+    {
+        return records;
+    }
+
     @Override
     public String toString()
     {
@@ -79,6 +89,11 @@ public class UserInfoModel
         for(String path : imgPath)
         {
             builder.append(String.format("\n\t\t%s", path));
+        }
+        builder.append("\n\t}\n\tarrivalTimestamp:\n\t{");
+        for(StayRecordModel oneEntry : records)
+        {
+            builder.append(String.format("\n\t\t%s", oneEntry.toString()));
         }
         builder.append("\n\t}\n\tencodedFacePath:\n\t{");
         for(String path : encodedFacePath)

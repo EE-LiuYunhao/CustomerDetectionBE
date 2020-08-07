@@ -7,6 +7,7 @@ import java.util.List;
 import com.ivm.CustomerDetect.model.AverageStayModel;
 import com.ivm.CustomerDetect.model.EncodedFaceModel;
 import com.ivm.CustomerDetect.model.FaceImagePathModel;
+import com.ivm.CustomerDetect.model.StayRecordModel;
 import com.ivm.CustomerDetect.model.UserInfoModel;
 import com.ivm.CustomerDetect.model.UserModel;
 import com.ivm.CustomerDetect.service.DAO.EncodedFaceDAO;
@@ -61,6 +62,10 @@ public class GetUserInfoController
         AverageStayModel stayEntry = averageStayDao.retrieveById(uid);
         if(stayEntry != null)
             model.setAvgStay(stayEntry.getAverageStay());
+
+        List<StayRecordModel> selfRecords = stayRecordDAO.retrieveByCondition(whereClause);
+        if(selfRecords != null)
+            model.setRecords( selfRecords.toArray(new StayRecordModel[selfRecords.size()]) );
     }
 
     @RequestMapping(value="/visitor/uid/{uid}")
@@ -98,6 +103,7 @@ public class GetUserInfoController
             oneUser.setUid(eachModel.getUid());
 
             setRelevantInfoForModel(oneUser);
+            models.add(oneUser);
         }
         return models.toArray(new UserInfoModel[models.size()]);
     }

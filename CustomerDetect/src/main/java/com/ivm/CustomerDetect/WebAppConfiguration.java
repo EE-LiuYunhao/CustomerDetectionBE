@@ -17,7 +17,7 @@ public class WebAppConfiguration extends WebMvcConfigurationSupport
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry)
     {
-        registry.addResourceHandler("/image/**").addResourceLocations("file:"+imgFileFolder);
-        registry.addResourceHandler("/face/**").addResourceLocations("file:"+encodedFaceFolder);
-	}
+        registry.addResourceHandler("/image/**").addResourceLocations("file:" + imgFileFolder);
+        registry.addResourceHandler("/face/**").addResourceLocations("file:" + encodedFaceFolder);
+    }
 }
