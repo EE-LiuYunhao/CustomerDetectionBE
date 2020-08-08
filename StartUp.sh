@@ -9,4 +9,6 @@ export PATH=$JAVA_HOME/bin:$PATH
 cd /home/cv001/ServerProgram/CustomerDetect/build/libs
 nohup java -jar CustomerDetect-0.0.1-SNAPSHOT.jar > "$currentTimeStamp.log" 2>&1 &
 
-#TODO: also start the CV prog
+cd /home/cv001/ProgramFile/dlib
+workon opencv_cuda
+python3.6 -m cProfile -s cumtime main.py --input "rtsp://admin:IVMCV001@192.168.1.64" -w 1 -s 15
