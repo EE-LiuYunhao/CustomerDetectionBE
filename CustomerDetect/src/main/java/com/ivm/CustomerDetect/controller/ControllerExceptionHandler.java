@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 @RestControllerAdvice
 public class ControllerExceptionHandler
 {
-    //TODO: logger
-
     @ExceptionHandler(IllegalURLParameter.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String alertUrlError(IllegalURLParameter ex)
@@ -31,6 +29,7 @@ public class ControllerExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String javaBeanParsingFailed(Exception ex)
     {
+        ex.printStackTrace();
         return "Failed to parse data into Java Bean";
     }
 }

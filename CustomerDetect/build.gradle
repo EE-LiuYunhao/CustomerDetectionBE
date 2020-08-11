@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.ivm'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
@@ -20,6 +20,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'mysql:mysql-connector-java:8.0.13'
 	implementation 'org.springframework:spring-tx'
+	implementation 'org.springframework.boot:spring-boot-starter-aop:2.3.1.RELEASE'
 }
 
 test {
