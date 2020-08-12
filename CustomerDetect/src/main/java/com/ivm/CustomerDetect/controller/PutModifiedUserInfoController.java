@@ -43,9 +43,15 @@ public class PutModifiedUserInfoController
 
     @Value("${static.img}")
     private String imageFolder;
+    
+    @Value("${static.imgExtension}")
+    private String imageExtension;
 
     @Value("${static.encodedFace}")
     private String faceFolder;
+    
+    @Value("${static.encodedFaceExtension}")
+    private String faceExtension;
 
     @RequestMapping(value = "/visitor/stay", method=RequestMethod.PUT)
     @Transactional
@@ -97,6 +103,9 @@ public class PutModifiedUserInfoController
         @RequestParam("facePath") String  facePath
     ) throws Exception
     {
+        facePath = facePath + faceExtension;
+        imgPath  = imgPath  + imageExtension;
+        
         EncodedFaceModel face = new EncodedFaceModel();
         face.setUid(uid);
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
