@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /home/cv001/ProgramFile/dlib
+workon opencv_cuda
+python3.6 -m cProfile -s cumtime main.py --input "rtsp://admin:IVMCV001@192.168.1.64" -w 1 -s 15
