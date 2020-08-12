@@ -2,8 +2,8 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 	<contextName>d1money-web-ys-ems</contextName>
     <!-- Directory for the logs -->
-	<property name="log_dir" value="logs" />
-	<!-- Maximum history of the logs 30天 -->
+	<property name="log_dir" value="/var/log/RESTful" />
+	<!-- Maximum history of the logs 30 days -->
 	<property name="maxHistory" value="30" />
 	<property name="maxFileSize" value="50MB" />
 
