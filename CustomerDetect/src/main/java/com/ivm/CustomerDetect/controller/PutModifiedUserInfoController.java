@@ -88,6 +88,40 @@ public class PutModifiedUserInfoController
         userDao.updateModel(newInfo);
     }
     
+    @RequestMapping(value="/visitor/image/{uid}", method=RequestMethod.PUT)
+    @Transactional
+    public void appendImageAndFaceRecordsOnly
+    (
+        @PathVariable             Integer uid,
+        @RequestParam("imgPath")  String  imgPath,
+        @RequestParam("facePath") String  facePath
+    ) throws Exception
+    {
+        EncodedFaceModel face = new EncodedFaceModel();
+        face.setUid(uid);
+        SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        face.setTimeStamp(formatter.format(date));
+        face.setEncodedFacePath(facePath);
+        encodedFaceDao.createModel(face);
+        
+        List<String> whereClause = new ArrayList<>();
+        whereClause.add("uid = "+uid);
+        whereClause.add("encodedFacePath = "+facePath)
+        whereClause.add("timeStamp = "+formatter.format(date));
+        List<EncodedFaceModel> tempFaceList = encodedFaceDao.retrieveByCondition(whereClause);
+        if(tempFaceList == null || tempFaceList.size() == 0)
+            throw new SQLException("Insertion fails with no entries in the DB");
+        
+        face = tempFaceList[tempFaceList.size()-1];
+        
+        FaceImagePathModel image = new FaceImagePathModel();
+        image.setFaceId(face.getFaceId());
+        image.setImgPath(imgPath);
+        image.setUid(uid);
+        faceImgPathDao.createModel(image);
+    }
+    
     @RequestMapping(value="/visitor/uploadImg/{uid}", method=RequestMethod.PUT)
     @Transactional
     public void acceptImageUploading
