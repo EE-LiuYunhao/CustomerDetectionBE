@@ -1,7 +1,9 @@
 package com.ivm.CustomerDetect.controller;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -103,11 +105,11 @@ public class PutModifiedUserInfoController
         @RequestParam("facePath") String  facePath
     ) throws Exception
     {
-        facePath = facePath + faceExtension;
-        imgPath  = imgPath  + imageExtension;
+        facePath = facePath + "." + faceExtension;
+        imgPath  = imgPath  + "." + imageExtension;
         
         EncodedFaceModel face = new EncodedFaceModel();
-        face.setUid(uid);
+        face.setUid(""+uid);
         SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         face.setTimeStamp(formatter.format(date));
@@ -116,18 +118,18 @@ public class PutModifiedUserInfoController
         
         List<String> whereClause = new ArrayList<>();
         whereClause.add("uid = "+uid);
-        whereClause.add("encodedFacePath = "+facePath)
-        whereClause.add("timeStamp = "+formatter.format(date));
+        whereClause.add("encodedFacePath = '"+facePath+"'");
+        whereClause.add("timeStamp = '"+formatter.format(date)+"'");
         List<EncodedFaceModel> tempFaceList = encodedFaceDao.retrieveByCondition(whereClause);
         if(tempFaceList == null || tempFaceList.size() == 0)
             throw new SQLException("Insertion fails with no entries in the DB");
         
-        face = tempFaceList[tempFaceList.size()-1];
+        face = tempFaceList.get(tempFaceList.size()-1);
         
         FaceImagePathModel image = new FaceImagePathModel();
-        image.setFaceId(face.getFaceId());
+        image.setFaceId(""+face.getFaceId());
         image.setImgPath(imgPath);
-        image.setUid(uid);
+        image.setUid(""+uid);
         faceImgPathDao.createModel(image);
     }
     

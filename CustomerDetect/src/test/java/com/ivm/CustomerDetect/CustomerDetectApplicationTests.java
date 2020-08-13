@@ -51,4 +51,14 @@ class CustomerDetectApplicationTests
 			System.out.println(eachModel);
 		}
 	}
+
+	@Test
+	void test_put_faceimageEntry()
+	{
+		template.put("/visitor/image/{uid}?imgPath=0F0F0F0F&facePath=F0F0F0F0", null, 1);
+		final ResponseEntity<UserInfoModel> model = template.getForEntity("/visitor/uid/{uid}", UserInfoModel.class, 1);
+		Assert.isTrue(model.hasBody(), "The GET /user/uid/1 methods returns nothing");
+		Assert.notNull(model.getBody(), "Null object");
+		System.out.println(model.getBody());
+	}
 }
