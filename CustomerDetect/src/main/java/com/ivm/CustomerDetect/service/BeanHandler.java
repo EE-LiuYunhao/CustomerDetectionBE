@@ -36,9 +36,13 @@ public class BeanHandler implements ResultSetHandler
                 String value      = resultSet.getString(i+1);
                 if(value == null)
                     continue;
-                Method setter = bean.getClass().getMethod("set"+ Character.toUpperCase(columnName.charAt(0)) + columnName.substring(1), String.class);
-                setter.setAccessible(true);
-                setter.invoke(bean, value);
+                try
+                {
+                    Method setter = bean.getClass().getMethod("set"+ Character.toUpperCase(columnName.charAt(0)) + columnName.substring(1), String.class);
+                    setter.setAccessible(true);
+                    setter.invoke(bean, value);
+                }
+                catch(NoSuchMethodException e){} //skip
             }
             results.add(bean);
         }

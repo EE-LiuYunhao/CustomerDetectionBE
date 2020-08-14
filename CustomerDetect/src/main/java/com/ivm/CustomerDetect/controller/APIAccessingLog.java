@@ -16,8 +16,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 public class APIAccessingLog {
     @Pointcut("execution(public * com.ivm.CustomerDetect.controller.*.*(..))")
-    public void webLog() {
-    }
+    public void webLog(){}
+
+    @Pointcut("execution(public * com.ivm.CustomerDetect.ControllerExceptionHandler.*(..))")
+    public void exception(){}
 
     private static final Logger logger = LoggerFactory.getLogger(APIAccessingLog.class);
 
@@ -48,7 +50,24 @@ public class APIAccessingLog {
             request.getRequestURL().toString(),
             request.getMethod(),
             request.getRemoteAddr(),
-            ret.toString().replace('\n', ' ')
+            ret == null ? "void" : ret.toString().replace('\n', ' ')
         );
+    }
+
+    @Before("exception(){}")
+    public void printException(JoinPoint joinPoint)
+    {
+        Object [] exs = joinPoint.getArgs();
+        if(exs == null || exs.length == 0 || !(exs[0] instanceof Exception))
+            return;
+        Exception ex = (Exception)exs[0];
+        logger.error("Exception: {}:{}", ex.getLocalizedMessage(), ex.getMessage());
+        StringBuilder builder = new StringBuilder();
+        for(StackTraceElement trace : ex.getStackTrace())
+        {
+            builder.append(trace.toString());
+            builder.append('\n');
+        }
+        logger.error("{}", builder.toString());
     }
 }
