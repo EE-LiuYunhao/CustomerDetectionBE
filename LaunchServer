@@ -2,5 +2,5 @@
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/
 export PATH=$JAVA_HOME/bin:$PATH
-cd /home/cv001/ServerProgram/CustomerDetect/build/libs
-nohup java -jar CustomerDetect-0.0.1-SNAPSHOT.jar &
+cd /usr/local/share/
+nohup java -jar CustomerDetect-0.2.0-SNAPSHOT.jar &
