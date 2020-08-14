@@ -50,7 +50,7 @@ public class APIAccessingLog {
             request.getRequestURL().toString(),
             request.getMethod(),
             request.getRemoteAddr(),
-            ret.toString().replace('\n', ' ')
+            ret == null ? "void" : ret.toString().replace('\n', ' ')
         );
     }
 
@@ -62,5 +62,12 @@ public class APIAccessingLog {
             return;
         Exception ex = (Exception)exs[0];
         logger.error("Exception: {}:{}", ex.getLocalizedMessage(), ex.getMessage());
+        StringBuilder builder = new StringBuilder();
+        for(StackTraceElement trace : ex.getStackTrace())
+        {
+            builder.append(trace.toString());
+            builder.append('\n');
+        }
+        logger.error("{}", builder.toString());
     }
 }
