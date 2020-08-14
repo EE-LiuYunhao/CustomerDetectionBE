@@ -1,4 +1,4 @@
-package com.ivm.CustomerDetect.controller;
+package com.ivm.CustomerDetect;
 
 public class IllegalURLParameter extends Exception
 {

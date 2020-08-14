@@ -1,4 +1,4 @@
-package com.ivm.CustomerDetect.controller;
+package com.ivm.CustomerDetect;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,6 +30,6 @@ public class ControllerExceptionHandler
     public String javaBeanParsingFailed(Exception ex)
     {
         ex.printStackTrace();
-        return "Failed to parse data into Java Bean";
+        return "Internal server exception, needing inspection";
     }
 }

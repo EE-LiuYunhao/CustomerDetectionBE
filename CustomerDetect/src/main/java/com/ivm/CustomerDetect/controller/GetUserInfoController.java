@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ivm.CustomerDetect.IllegalURLParameter;
 import com.ivm.CustomerDetect.model.AverageStayModel;
 import com.ivm.CustomerDetect.model.EncodedFaceModel;
 import com.ivm.CustomerDetect.model.FaceImagePathModel;

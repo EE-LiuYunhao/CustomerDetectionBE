@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.ivm.CustomerDetect.IllegalURLParameter;
 import com.ivm.CustomerDetect.model.EncodedFaceModel;
 import com.ivm.CustomerDetect.model.FaceImagePathModel;
 import com.ivm.CustomerDetect.model.StayRecordModel;
