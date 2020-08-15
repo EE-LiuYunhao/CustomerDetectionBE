@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,6 +58,9 @@ public class PutModifiedUserInfoController
     @Value("${static.encodedFaceExtension}")
     private String faceExtension;
 
+    @Value("${sql.timeLocale}")
+    private String location;
+
     @RequestMapping(value = "/visitor/stay", method=RequestMethod.PUT)
     @Transactional
     public void insertOrModifyStayRecord(@RequestBody StayRecordModel newStay) throws Exception
@@ -76,6 +81,19 @@ public class PutModifiedUserInfoController
             if(collection == null ||collection.size()==0)
                 return;
             StayRecordModel firstVisitor = collection.get(0);
+
+            //NOTE: the MySQL by default converts input string into UTC
+            //Hence, the firstVisitor.getDatetimeIn() is UTC
+            //We need to convert it back to local time
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date utcDate = sdf.parse(firstVisitor.getDatetimeIn().toString());
+
+            SimpleDateFormat localFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            localFormater.setTimeZone(TimeZone.getTimeZone(location));
+            String localTime = localFormater.format(utcDate);
+
+            firstVisitor.setDatetimeIn(localTime);
             firstVisitor.setDatetimeOut(newStay.getDatetimeOut().toString());
             stayRecordDAO.updateModel(firstVisitor);
             return;
