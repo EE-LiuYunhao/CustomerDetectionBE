@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -62,14 +61,40 @@ public class PutModifiedUserInfoController
     private String location;
 
     @RequestMapping(value = "/visitor/stay", method=RequestMethod.PUT)
-    @Transactional
-    public void insertOrModifyStayRecord(@RequestBody StayRecordModel newStay) throws Exception
+    @Transactional(rollbackFor = Exception.class)
+    public void insertOrModifyStayRecord
+    (
+        @RequestBody StayRecordModel newStay,
+        @RequestParam(name="name", required=false) String newName
+    ) throws Exception
     {
         if(newStay == null)
             throw new IllegalURLParameter("/visitor/stay", "Empty stay entry");
         //case one & two: leave time is null while the other two are not / or both not null
         if(newStay.getDatetimeIn()!=null && newStay.getUid()!=null)
         {
+            //first check whether the user id is valid:
+            if(newStay.getUid()<=0 || userDao.retrieveById(newStay.getUid()) == null)
+            {
+                int oldUid = newStay.getUid();
+                // no such user id: create a new one
+                // newName is mandantory in this case
+                if(newName == null || newName.length()==0)
+                    throw new IllegalURLParameter("/visitor/stay", "name is a must as there is no entry for"+newStay.getUid()); 
+                UserModel newUser = new UserModel();
+                newUser.setName(newName);
+                userDao.createModel(newUser);
+
+
+                List<UserModel> users = userDao.retrieveByCondition(Arrays.asList(new String []{"name = '"+newName+"'"}) );
+                newStay.setUid(users.get(users.size()-1).getUid().toString());
+                if(oldUid == 0)
+                {
+                    String name = users.get(users.size()-1).getName();
+                    appendImageAndFaceRecordsOnly(newStay.getUid(), name, name);
+                }
+            }
+
             newStay.setRecordId("0");
             stayRecordDAO.createModel(newStay);
             return;
@@ -104,7 +129,7 @@ public class PutModifiedUserInfoController
 
 
     @RequestMapping(value="/visitor/modify/{uid}", method=RequestMethod.PUT)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void modifyUserInfoById(@PathVariable Integer uid, @RequestBody UserModel newInfo) throws Exception
     {
         if(newInfo == null)
@@ -116,14 +141,21 @@ public class PutModifiedUserInfoController
     }
     
     @RequestMapping(value="/visitor/image/{uid}", method=RequestMethod.PUT)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void appendImageAndFaceRecordsOnly
     (
         @PathVariable             Integer uid,
-        @RequestParam("imgPath")  String  imgPath,
-        @RequestParam("facePath") String  facePath
+        @RequestParam(name="imgPath", required=false)  String imgPath,
+        @RequestParam(name="facePath", required=false) String facePath
     ) throws Exception
     {
+        if(imgPath == null || imgPath.length()==0 || facePath == null || facePath.length()==0)
+        {
+            UserModel user = userDao.retrieveById(uid);
+            imgPath = user.getName();
+            facePath = user.getName();
+        }
+
         facePath = facePath + "." + faceExtension;
         imgPath  = imgPath  + "." + imageExtension;
         
@@ -153,7 +185,7 @@ public class PutModifiedUserInfoController
     }
     
     @RequestMapping(value="/visitor/uploadImg/{uid}", method=RequestMethod.PUT)
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void acceptImageUploading
     (
         @PathVariable String uid,
