@@ -96,8 +96,8 @@ public class UserDAO implements ReadonlyObjectBaseDAO<UserModel>, WritableObject
             new Object[]
             {
                 null,
-                (Object)user.getGender().toString(),
-                (Object)user.getName()
+                (Object)(user.getGender()==null?null:user.getGender().toString()),
+                (Object)(user.getName()==null?null:user.getName().toString())
             }
         );
         return true;
