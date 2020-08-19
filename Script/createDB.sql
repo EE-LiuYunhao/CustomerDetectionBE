@@ -28,7 +28,7 @@ CREATE TABLE `StayRecord`
 (
     `recordId` INT(15) NOT NULL AUTO_INCREMENT, 
     `datetimeIn` DATETIME NOT NULL,
-    `datetimeOut` DATETIME NOT NULL,
+    `datetimeOut` DATETIME,
     `uid` INT(11) NOT NULL,
     PRIMARY KEY(`recordId`),
     FOREIGN KEY(`uid`) REFERENCES UserInfo(`uid`)
