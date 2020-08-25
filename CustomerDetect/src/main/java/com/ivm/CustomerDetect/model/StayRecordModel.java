@@ -3,24 +3,24 @@ package com.ivm.CustomerDetect.model;
 import java.beans.JavaBean;
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import org.springframework.format.annotation.DateTimeFormat;
 
 @JavaBean
 @JsonInclude(Include.NON_NULL)
 public class StayRecordModel
 {
     private Integer recordId;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp datetimeIn;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Timestamp datetimeOut;
     private Integer uid;
+    private String datetimeIn;
+    private String datetimeOut;
+
+    @JsonIgnore
+    private Timestamp datetimeInOrigin;
+    @JsonIgnore
+    private Timestamp datetimeOutOrigin;
 
     public Integer getRecordId()
     {
@@ -31,22 +31,32 @@ public class StayRecordModel
         recordId = Integer.valueOf(value);
     }
 
-    public Timestamp getDatetimeIn()
+    public String getDatetimeIn()
     {
         return datetimeIn;
     }
+    public Timestamp getDatetimeInOrigin()
+    {
+        return datetimeInOrigin;
+    }
     public void setDatetimeIn(String value)
     {
-        datetimeIn = Timestamp.valueOf(value);
+        datetimeInOrigin = Timestamp.valueOf(value);
+        datetimeIn = value;
     }
 
-    public Timestamp getDatetimeOut()
+    public String getDatetimeOut()
     {
         return datetimeOut;
     }
+    public Timestamp getDatetimeOutOrigin()
+    {
+        return datetimeOutOrigin;
+    }
     public void setDatetimeOut(String value)
     {
-        datetimeOut = Timestamp.valueOf(value);
+        datetimeOutOrigin = Timestamp.valueOf(value);
+        datetimeOut = value;
     }
 
     public Integer getUid()

@@ -81,12 +81,12 @@ public class GetUserInfoController
                 SimpleDateFormat localFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 localFormater.setTimeZone(TimeZone.getTimeZone(location));
                 
-                Date utcDate = sdf.parse(eachRecord.getDatetimeIn().toString());
+                Date utcDate = sdf.parse(eachRecord.getDatetimeIn());
                 eachRecord.setDatetimeIn(localFormater.format(utcDate));
                 
                 if(eachRecord.getDatetimeOut()!=null)
                 {
-                    utcDate = sdf.parse(eachRecord.getDatetimeOut().toString());
+                    utcDate = sdf.parse(eachRecord.getDatetimeOut());
                     eachRecord.setDatetimeOut(localFormater.format(utcDate));
                 }
             }

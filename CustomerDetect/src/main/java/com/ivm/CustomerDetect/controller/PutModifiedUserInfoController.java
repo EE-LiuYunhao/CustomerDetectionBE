@@ -112,14 +112,14 @@ public class PutModifiedUserInfoController
             //We need to convert it back to local time
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date utcDate = sdf.parse(firstVisitor.getDatetimeIn().toString());
+            Date utcDate = sdf.parse(firstVisitor.getDatetimeIn());
 
             SimpleDateFormat localFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             localFormater.setTimeZone(TimeZone.getTimeZone(location));
             String localTime = localFormater.format(utcDate);
 
             firstVisitor.setDatetimeIn(localTime);
-            firstVisitor.setDatetimeOut(newStay.getDatetimeOut().toString());
+            firstVisitor.setDatetimeOut(newStay.getDatetimeOut());
             stayRecordDAO.updateModel(firstVisitor);
             return;
         }
