@@ -1,8 +1,11 @@
 package com.ivm.CustomerDetect.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.Date;
 
 import com.ivm.CustomerDetect.IllegalURLParameter;
 import com.ivm.CustomerDetect.model.AverageStayModel;
@@ -18,6 +21,7 @@ import com.ivm.CustomerDetect.service.DAO.StayRecordDAO;
 import com.ivm.CustomerDetect.service.DAO.UserDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +40,9 @@ public class GetUserInfoController
     private ReadonlyAverageStay averageStayDao;
     @Autowired
     private StayRecordDAO stayRecordDAO;
+
+    @Value("${sql.timeLocale}")
+    private String location;
 
 
     private void setRelevantInfoForModel(UserInfoModel model) throws Exception
@@ -66,7 +73,25 @@ public class GetUserInfoController
 
         List<StayRecordModel> selfRecords = stayRecordDAO.retrieveByCondition(whereClause);
         if(selfRecords != null)
+        {
+            for(StayRecordModel eachRecord : selfRecords)
+            {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                SimpleDateFormat localFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                localFormater.setTimeZone(TimeZone.getTimeZone(location));
+                
+                Date utcDate = sdf.parse(eachRecord.getDatetimeIn().toString());
+                eachRecord.setDatetimeIn(localFormater.format(utcDate));
+                
+                if(eachRecord.getDatetimeOut()!=null)
+                {
+                    utcDate = sdf.parse(eachRecord.getDatetimeOut().toString());
+                    eachRecord.setDatetimeOut(localFormater.format(utcDate));
+                }
+            }
             model.setRecords( selfRecords.toArray(new StayRecordModel[selfRecords.size()]) );
+        }
     }
 
     @RequestMapping(value="/visitor/uid/{uid}")
