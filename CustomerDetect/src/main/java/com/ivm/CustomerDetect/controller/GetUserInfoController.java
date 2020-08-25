@@ -41,7 +41,7 @@ public class GetUserInfoController
     @Autowired
     private StayRecordDAO stayRecordDAO;
 
-    @Value("${sql.timeLocale}")
+    @Value("${spring.jackson.time-zone}")
     private String location;
 
 

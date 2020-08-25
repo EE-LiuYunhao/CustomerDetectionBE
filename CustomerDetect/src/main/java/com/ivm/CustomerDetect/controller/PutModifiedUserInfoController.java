@@ -57,7 +57,7 @@ public class PutModifiedUserInfoController
     @Value("${static.encodedFaceExtension}")
     private String faceExtension;
 
-    @Value("${sql.timeLocale}")
+    @Value("${spring.jackson.time-zone}")
     private String location;
 
     @RequestMapping(value = "/visitor/stay", method=RequestMethod.PUT)
